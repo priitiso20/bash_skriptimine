@@ -20,7 +20,7 @@ else
                      		echo "Kasutaja nimega $nimi on lisatud süsteemi"
                                 cat /etc/passwd | grep $nimi
                                 ls -la /home/$nimi
-				parool=$pwgen -s -1
+				parool=$read pwgen -s -1
 				echo "$nimi:$parool" | chpasswd
 				echo "$nimi:$parool" >> logifail
                         else
