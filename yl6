@@ -2,11 +2,18 @@
 # kasutaja ja parooli lisamise skript
 
 
-#!/bin/bash
-if [[ $EUID -ne 0 ]]; then
-   echo "Seda skripti saab ainult root käivitada." 
-   exit 1
+if [ "$(id -u)" -eq 0 ]
+then
+    if [ -n "$SUDO_USER" ]
+    then
+        echo "Seda skripti saab käivitada ainult root (mitte sudo)."
+        exit
+    fi
+else
+    echo "Seda skripti saab käivitada ainult root."
+    exit
 fi
+
 
 if [ $# -ne 1 ]; then
 
