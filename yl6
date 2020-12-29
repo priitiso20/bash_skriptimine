@@ -1,0 +1,40 @@
+#!/bin/bash
+# kasutaja ja parooli lisamise skript
+
+
+#!/bin/bash
+if [[ $EUID -ne 0 ]]; then
+   echo "Seda skripti saab ainult root käivitada." 
+   exit 1
+fi
+
+if [ $# -ne 1 ]; then
+
+        echo "Kasutusjuhend: $0 kasutajanimede_fail"
+
+else
+
+        kasutajafail=$1
+
+        if [ -f $kasutajafail -a -r $kasutajafail ]; then
+                echo "kasutajate fail on korras"
+
+                for nimi in $(cat $kasutajafail)
+                do
+                	useradd $nimi -m -s /bin/bash
+                        if [ $? -eq 0 ]; then
+                     		echo "Kasutaja nimega $nimi on lisatud süsteemi"
+                                cat /etc/passwd | grep $nimi
+                                ls -la /home/$nimi
+				parool=$(pwgen -s -1)
+				echo "$nimi:$parool" | chpasswd
+				echo "$nimi:$parool" >> logifail
+                        else
+                                echo "probleem kasutaja $nimi lisamisega"
+                                echo "probleemi kood on $?"
+                        fi
+                done
+	else
+        	echo "probleem failiga $kasutajafail"
+	fi
+fi
